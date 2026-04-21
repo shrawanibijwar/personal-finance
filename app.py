@@ -1269,16 +1269,22 @@ def start_scheduler():
     scheduler.start()
     print(" Scheduler started safely")
 
-# ---- Run ----
-if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
 
+
+# ---- DB / App setup ----
+with app.app_context():
+    db.create_all()
+
+
+# ---- Scheduler (ONLY for local) ----
+if os.environ.get("RENDER") != "true":
     if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
         start_scheduler()
 
-    app.run(debug=True)
 
+# ---- Run locally only ----
+if __name__ == "__main__":
+    app.run(debug=True)
 
 
 
