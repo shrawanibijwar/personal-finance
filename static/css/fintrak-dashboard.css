@@ -1,0 +1,498 @@
+/* ===== PAGE LOAD ===== */
+body {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: pageFade 0.6s ease forwards;
+}
+
+@keyframes pageFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(60px) scale(0.98);
+  transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ===== STAGGER DELAY ===== */
+.reveal:nth-child(1) { transition-delay: 0.1s; }
+.reveal:nth-child(2) { transition-delay: 0.2s; }
+.reveal:nth-child(3) { transition-delay: 0.3s; }
+.reveal:nth-child(4) { transition-delay: 0.4s; }
+.reveal:nth-child(5) { transition-delay: 0.5s; }
+
+
+/* Universal Card Style */
+.fintrack-card {
+  background: #ffffff;              /* ✅ white card */
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* soft shadow */
+  transition: all 0.3s ease;
+  border: 1px solid #eef2f7;      /* subtle border */
+    overflow: hidden;
+}
+
+/* Hover Effect (premium feel) */
+.fintrack-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Summary Row Layout Fix */
+.summary-row .col-xl {
+  flex: 0 0 25%;
+  max-width: 25%;
+}
+
+
+/* Make cards wider visually */
+.summary-card {
+  padding: 20px 30px;   /* increase horizontal space */
+  min-height: 180px;    /* keep height consistent */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Increase text spacing instead of height */
+.summary-card h4 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.summary-card .amount {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+/* Chart Container */
+.chart-container {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 25px;
+}
+/* Table Styling */
+.transaction-table {
+  width: 100%;
+  table-layout: fixed;        /* ✅ equal column width */
+  border-collapse: separate;
+  border-spacing: 0 10px;     /* ✅ spacing between rows */
+  text-align: center;         /* ✅ center all content */
+}
+
+/* Header Styling */
+.transaction-table thead th {
+  width: 20%;                 /* ✅ equal width */
+  font-weight: 600;
+  color: #64748b;
+  font-size: 14px;
+  padding: 12px;
+  text-align: center;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+/* Row Styling */
+.transaction-table tbody tr {
+  background: #f8fafc;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.transaction-table tbody tr:hover {
+  background: #eef2ff;
+  transform: scale(1.01);
+}
+
+/* Cell styling */
+.transaction-table td {
+  width: 20%;                 /* ✅ equal width */
+  padding: 12px;
+  vertical-align: middle;
+  text-align: center;
+  border-top: none;
+}
+
+/* Rounded corners */
+.transaction-table tbody tr td:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.transaction-table tbody tr td:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Prevent overflow */
+.transaction-table th,
+.transaction-table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Amount colors */
+.amount-negative {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.text-success {
+  color: #22c55e !important;
+  font-weight: 600;
+}
+
+/* Badge styling */
+.priority-badge {
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+/* Category colors */
+.bg-soft-danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.bg-soft-success {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.bg-soft-warning {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+/* Delete button */
+.delete-btn {
+  border-radius: 50%;
+  padding: 6px 10px;
+}
+
+/*CSV and PDF Button */
+.export-box{
+display:flex;
+justify-content:flex-end;
+gap:12px;
+flex-wrap:wrap;
+}
+
+.export-btn{
+padding:10px 20px;
+border-radius:12px;
+font-weight:600;
+text-decoration:none;
+color:white;
+transition:0.3s;
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
+margin-top: 10px;
+}
+
+.csv-btn{
+background:linear-gradient(135deg,#10b981,#059669);
+}
+
+.pdf-btn{
+background:linear-gradient(135deg,#ef4444,#dc2626);
+}
+
+.export-btn:hover{
+transform:translateY(-2px);
+opacity:0.95;
+color:white;
+}
+
+
+/* Form Inputs */
+.form-control {
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  padding: 10px;
+}
+
+.form-control:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Buttons */
+.gradient-btn {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  border: none;
+  color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.gradient-btn:hover {
+  transform: scale(1.03);
+  opacity: 0.95;
+}
+
+/* Progress Bar */
+.progress {
+  height: 6px;
+  border-radius: 10px;
+  background: #e5e7eb;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #3b82f6, #6366f1);
+}
+
+/* AI Section Highlight */
+.ai-glow {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e0e7ff;
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.1);
+}
+
+/* Fix EMI section spacing */
+#emiForm {
+  position: relative;
+  z-index: 2;
+}
+
+/* Ensure button is always visible */
+#calculateEmi {
+  position: relative;
+  z-index: 3;
+  margin-top: 10px;
+}
+
+/* Add spacing between EMI result and next card */
+.fintrack-card + .fintrack-card {
+  margin-top: 25px;
+}
+
+/* Fix Active Loans Section */
+.fintrack-card[data-delay="1.25s"] {
+  position: relative;
+  z-index: 1;
+  margin-top: 30px;
+}
+
+/* ================= DARK MODE DASHBOARD ================= */
+
+body.dark-mode {
+  background: #0f172a; /* deep navy */
+  color: #e2e8f0;
+}
+
+/* Cards */
+body.dark-mode .fintrack-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .fintrack-card:hover {
+  box-shadow: 0 8px 35px rgba(0, 0, 0, 0.6);
+}
+
+/* Summary Text */
+body.dark-mode .summary-card h4 {
+  color: #94a3b8;
+}
+
+body.dark-mode .summary-card .amount {
+  color: #f1f5f9;
+}
+
+/* Chart Container */
+body.dark-mode .chart-container {
+  background: #1e293b;
+}
+
+/* Tables */
+body.dark-mode .table {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+body.dark-mode .table th {
+  background: #334155;
+  color: #f1f5f9;
+}
+
+body.dark-mode .table td {
+  border-color: #334155;
+}
+
+/* Forms */
+body.dark-mode .form-control {
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+body.dark-mode .form-control::placeholder {
+  color: #64748b;
+}
+
+body.dark-mode .form-control:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Buttons */
+body.dark-mode .gradient-btn {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+/* Progress Bar */
+body.dark-mode .progress {
+  background: #334155;
+}
+
+body.dark-mode .progress-bar {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+}
+
+/* AI Glow Card */
+body.dark-mode .ai-glow {
+  background: #1e293b;
+  border: 1px solid #4f46e5;
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.2);
+}
+
+/* EMI Section Fix */
+body.dark-mode #emiForm {
+  background: transparent;
+}
+
+
+.inner-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border: 1px solid #e5e7eb;
+  transition: 0.3s;
+}
+
+.inner-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* Headings */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode p
+ {
+  color: #f8fafc;
+}
+
+/* Subtle divider */
+body.dark-mode hr {
+  border-color: #334155;
+}
+
+/* ===== FORCE TEXT VISIBILITY IN DARK MODE ===== */
+
+/* General text */
+body.dark-mode,
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode small,
+body.dark-mode label {
+  color: #e2e8f0 !important;
+}
+
+/* Headings stronger */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5 {
+  color: #f8fafc !important;
+}
+
+/* Muted text fix */
+body.dark-mode .text-muted {
+  color: #94a3b8 !important;
+}
+
+/* Bootstrap light backgrounds fix */
+body.dark-mode .bg-light {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+/* List group (notifications issue) */
+body.dark-mode .list-group-item {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-color: #334155;
+}
+
+/* Table text fix */
+body.dark-mode .transaction-table td,
+body.dark-mode .transaction-table th {
+  color: #e2e8f0;
+}
+
+/* Badge text visibility */
+body.dark-mode .badge {
+  color: #f8fafc;
+}
+
+/* Fix category badges (important) */
+body.dark-mode .bg-soft-danger {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+body.dark-mode .bg-soft-success {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+}
+
+body.dark-mode .bg-soft-warning {
+  background: rgba(251, 191, 36, 0.2);
+  color: #facc15;
+}
+
+/* Form placeholders */
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #64748b;
+}
+
+/* Inner card fix */
+body.dark-mode .inner-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+/* AI insight box (IMPORTANT - yours was light) */
+body.dark-mode .ai-glow .bg-light {
+  background: linear-gradient(135deg, #1e293b, #0f172a) !important;
+  color: #e2e8f0 !important;
+  border-left: 5px solid #22c55e;
+}
+
+/* Buttons text */
+body.dark-mode .btn {
+  color: #f8fafc;
+}

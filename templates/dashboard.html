@@ -1,239 +1,564 @@
 {% extends 'base.html' %}
-{% block title %}Dashboard{% endblock %}
+{% block title %}FinTrack Dashboard{% endblock %}
 
 {% block content %}
-<div class="container">
-  <h2 class="mb-4">📊 Your Financial Dashboard</h2>
+<div class="dashboard-container">
+  <!-- 🔔 Notifications -->
+{% if notifications %}
+<div class="fintrack-card mb-4">
+  <h5>🔔 Notifications</h5>
+  <ul class="list-group">
+    {% for n in notifications %}
+   <li class="list-group-item d-flex justify-content-between align-items-center">
+  
+  {{ n.message }}
 
-  <!-- Top Stats Cards -->
-  <div class="row g-4 mb-4">
-    <div class="col-md-4">
-      <div class="card shadow-sm text-center p-3">
-        <h4>💰 Income</h4>
-        <p class="fs-4 fw-bold">₹{{ monthly_income }}</p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card shadow-sm text-center p-3">
-        <h4>💸 Expenses</h4>
-        <p class="fs-4 fw-bold">₹{{ monthly_expenses }}</p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card shadow-sm text-center p-3">
-        <h4>💵 Savings</h4>
-        <p class="fs-4 fw-bold {% if (monthly_income - monthly_expenses) < 0 %}text-danger{% else %}text-success{% endif %}">
-          ₹{{ (monthly_income - monthly_expenses)|round(2) }}
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Alerts / Notifications -->
-  {% if warning %}
-    <div class="alert alert-danger">{{ warning }}</div>
-  {% endif %}
-
-  <!-- Profile Update -->
-  <div class="card shadow-sm p-3 mb-4">
-    <h5>Update Profile</h5>
-    <form action="{{ url_for('update_profile') }}" method="POST">
-      <div class="mb-2">
-        <input type="text" class="form-control" name="occupation" placeholder="Occupation" value="{{ user.occupation or '' }}">
-      </div>
-      <div class="mb-2">
-        <input type="number" class="form-control" name="monthly_income" placeholder="Monthly Income" value="{{ user.monthly_income or '' }}">
-      </div>
-      
-      <button type="submit" class="btn btn-primary">Update</button>
+  <div class="d-flex gap-2">
+    
+    <!-- ✔ Mark as read -->
+    <form method="POST" action="{{ url_for('mark_notification_read', notif_id=n.id) }}">
+      <button class="btn btn-sm btn-success">✔</button>
     </form>
+
+    <!-- ❌ Delete -->
+    <form method="POST" action="{{ url_for('delete_notification', notif_id=n.id) }}">
+      <button class="btn btn-sm btn-danger">✖</button>
+    </form>
+
   </div>
 
-  <!-- Add Expense Form -->
-  <div class="card shadow-sm p-3 mb-4">
-    <h5>Add New Expense</h5>
-    <form action="{{ url_for('add_expense') }}" method="POST">
-      <div class="mb-2"><input type="text" class="form-control" name="title" placeholder="Expense Title" required></div>
-      <div class="mb-2"><input type="number" step="0.01" class="form-control" name="amount" placeholder="Amount" required></div>
-      <div class="mb-2">
-        <select class="form-select" name="frequency">
+</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if warning %}
+<div class="alert alert-danger text-center">
+  {{ warning }}
+</div>
+{% endif %}
+
+
+
+  <!-- Top Summary Cards -->
+  <div class="row g-4 mb-5 summary-row">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+      <div class="fintrack-card reveal summary-card" data-delay="0.1s">
+     
+        <h4>Total Income</h4>
+        <p id="incomeAmount" class="amount">
+      ₹{{ monthly_income|default(50000)|int|round(0) }} 
+    </p>
+      </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+      <div class="fintrack-card reveal summary-card" data-delay="0.2s">
+ 
+        <h4>Total Expenses</h4>
+       <p id="expenseAmount" class="amount text-danger">
+  ₹{{ monthly_expenses|default(19100)|int|round(0) }}
+</p>
+      </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+      <div class="fintrack-card reveal summary-card" data-delay="0.3s">
+     
+        <h4>Remaining Balance</h4>
+<p id="balanceAmount" class="amount {% if (monthly_income|default(0)|float - monthly_expenses|default(0)|float) < 0 %}text-danger{% else %}text-success{% endif %}">
+  ₹{{ (monthly_income|default(0)|float - monthly_expenses|default(0)|float)|round(0) }}
+</p>
+      </div>
+    </div>
+   <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+  <div class="fintrack-card reveal summary-card" data-delay="0.4s">
+
+    
+    <h4>Predicted Spending</h4>
+
+    {% set predicted = ai_predicted_expense if ai_predicted_expense is not none else (monthly_expenses|default(0)|float * 1.1) %}
+    
+    <p class="amount">
+      ₹{{ predicted | round(0) }}
+    </p>
+  </div>
+</div>
+  </div>
+<!-- AI Personal Finance Assistant Insights -->
+<div class="row g-4 mb-5">
+  <div class="col-12">
+    <div class="fintrack-card ai-glow reveal" data-delay="0.5s">
+      <h3 class="card-title mb-4"> AI Financial Insights</h3> 
+
+      {% if ai_insights and 'Please add' not in ai_insights %}
+        <div class="p-4 rounded bg-light"
+             style="white-space: pre-line; font-size: 15px; line-height: 1.6; border-left: 5px solid #10b981; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+          {{ ai_insights | safe }}
+        </div>
+      {% else %}
+        <div class="text-center p-5 py-4">
+          <i class="fas fa-chart-line fs-1 text-muted mb-3"></i>
+          <h5 class="text-muted mb-2">No insights yet</h5>
+          <p class="text-muted mb-0">
+            Please add your monthly income (Profile) and expenses to unlock personalized insights.
+          </p>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-5 align-items-stretch">
+
+  <!-- LEFT -->
+  <div class="col-xl-8 d-flex">
+    <div class="fintrack-card chart-container reveal mb-5 w-100">
+      <h3 class="card-title mb-4">Expense Breakdown</h3>
+      <div class="chart-wrapper">
+        {% if expenses and expenses|length > 0 %}
+          <canvas id="expenseChart"></canvas>
+        {% else %}
+          <div class="no-data-placeholder text-center p-5">
+            <h5 class="text-muted mb-3">No expenses recorded yet</h5>
+            <p class="text-muted mb-4">Start adding your expenses.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="col-xl-4 d-flex">
+    <div class="fintrack-card reveal mb-5 w-100">
+      <h3 class="card-title mb-4">Update Profile</h3>
+      <form action="{{ url_for('update_profile') }}" method="POST">
+        <input type="text" name="occupation"  class="form-control mb-2" value="{{ user.occupation or '' }}" placeholder="occupation ">
+        <input type="number" name="monthly_income" class="form-control mb-2" value="{{ user.monthly_income or '' }}" placeholder="income">
+        <button type="submit" class="gradient-btn w-100">Save</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+
+      <!-- NEW ROW: Add Expense (LEFT) + Smart Goals (RIGHT) -->
+      <div class="row g-4 mb-5">
+        <!-- LEFT: Add Expense Form -->
+<div class="col-xl-5">
+  <div class="fintrack-card reveal" data-delay="0.9s">
+
+    <h3 class="card-title mb-4">Add Expense</h3>
+
+    <form action="{{ url_for('add_expense') }}" method="POST" class="row g-2">
+
+      <div class="col-12">
+        <input type="text" name="title" class="form-control"
+               placeholder="Expense Title" required>
+      </div>
+
+      <div class="col-md-6">
+        <input type="number" step="0.01" name="amount"
+               class="form-control" placeholder="Amount ₹" required>
+      </div>
+
+      <div class="col-md-6">
+        <select name="category" class="form-control" required>
+          <option value="" disabled selected>Select Category</option>
+          <option value="Food">🍔 Food</option>
+          <option value="Shopping">🛍 Shopping</option>
+          <option value="Bills">💡 Bills</option>
+          <option value="Travel">✈️ Travel</option>
+          <option value="Health">🏥 Health</option>
+          <option value="Entertainment">🎬 Entertainment</option>
+          <option value="Education">📚 Education</option>
+          <option value="Other">📦 Other</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <select name="frequency" class="form-control" required>
+          <option value="monthly">Monthly</option>
           <option value="daily">Daily</option>
-          <option value="monthly" selected>Monthly</option>
           <option value="yearly">Yearly</option>
         </select>
       </div>
 
-      <!-- Category select added -->
-      <div class="mb-2">
-        <select class="form-select" name="category">
-          <option value="Other" selected>Other</option>
-          <option value="Food">Food</option>
-          <option value="Bills">Bills</option>
-          <option value="Rent">Rent</option>
-          <option value="Travel">Travel</option>
-          <option value="Shopping">Shopping</option>
-          <option value="Health">Health</option>
-          <option value="Education">Education</option>
-        </select>
+      <div class="col-md-6">
+        <input type="text" name="description"
+               class="form-control" placeholder="Description">
       </div>
 
-      <div class="mb-2"><textarea class="form-control" name="description" placeholder="Description (optional)"></textarea></div>
-      <button type="submit" class="btn btn-success">Add Expense</button>
-    </form>
-  </div>
-
-  <!-- Goal Tracker -->
-  <div class="card shadow-sm p-3 mb-4">
-    <h5>🎯 Goal Tracker</h5>
-    <form action="{{ url_for('add_goal') }}" method="POST" class="mb-3">
-      <div class="row g-2">
-        <div class="col-md-5">
-          <input type="text" name="goal_title" class="form-control" placeholder="Goal title" required>
-        </div>
-        <div class="col-md-4">
-          <input type="number" step="0.01" name="goal_amount" class="form-control" placeholder="Target Amount" required>
-        </div>
-        <div class="col-md-2">
-          <input type="number" name="priority" class="form-control" placeholder="Priority (1 highest)" value="5" required>
-        </div>
-        <div class="col-md-1">
-          <button type="submit" class="btn btn-primary w-100">Add</button>
-        </div>
+      <div class="col-12">
+        <button type="submit" class="gradient-btn w-100">
+          Add Expense
+        </button>
       </div>
+
     </form>
 
-    {% if predicted_goals %}
-      <h6 class="mt-3">Your Goals (predicted timeline)</h6>
-      <table class="table table-striped table-bordered mt-2">
-        <thead class="table-dark">
-          <tr>
-            <th>Goal</th>
-            <th>Target (₹)</th>
-            <th>Priority</th>
-            <th>Start</th>
-            <th>Predicted Completion</th>
-            <th>Progress</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for p in predicted_goals %}
-          <tr>
-            <td>{{ p.goal.title }}</td>
-            <td>₹{{ "%.2f"|format(p.goal.target_amount) }}</td>
-            <td>{{ p.priority }}</td>
-            <td>
-              {% if p.start_date %}
-                {{ p.start_date.strftime('%d-%m-%Y') }}
-              {% else %}
-                -
-              {% endif %}
-            </td>
-            <td>
-              {% if p.end_date %}
-                {{ p.end_date.strftime('%d-%m-%Y') }}
-              {% else %}
-                Not predictable
-              {% endif %}
-            </td>
-            <td style="min-width:200px;">
-              <div class="mb-1 small">{{ p.progress_percent }}%</div>
-              <div class="progress" style="height:14px;">
-                <div class="progress-bar" role="progressbar" style="width: {{ p.progress_percent }}%;" aria-valuenow="{{ p.progress_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-            </td>
-            <td>
-              <form action="{{ url_for('delete_goal', goal_id=p.goal.id) }}" method="POST" style="display:inline;">
-                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-              </form>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p>No goals added yet.</p>
-    {% endif %}
   </div>
-
-  <!-- Expense History -->
-  <div class="card shadow-sm p-3 mb-4">
-    <h5>Expense History</h5>
-    {% if expenses %}
-      <table class="table table-striped table-bordered">
-        <thead class="table-dark">
-          <tr>
-            <th>Title</th>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Frequency</th>
-            <th>Description</th>
-            <th>Date</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for e in expenses %}
-          <tr>
-            <td>{{ e.title }}</td>
-            <td>₹{{ "%.2f"|format(e.amount) }}</td>
-            <td>{{ e.category or 'Other' }}</td>
-            <td>{{ e.frequency }}</td>
-            <td>{{ e.description or '-' }}</td>
-            <td>{{ e.date_recorded.strftime('%d-%m-%Y') }}</td>
-            <td>
-              <form action="{{ url_for('delete_expense', expense_id=e.id) }}" method="POST" style="display:inline;">
-                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-              </form>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p>No expenses recorded yet.</p>
-    {% endif %}
-  </div>
-
-  <!-- Export Buttons -->
-  <div class="mb-4">
-    <a href="{{ url_for('export_pdf') }}" class="btn btn-outline-primary">Export PDF</a>
-    <a href="{{ url_for('export_csv') }}" class="btn btn-outline-secondary">Export CSV</a>
-  </div>
-
-  <!-- Clear Dashboard Button -->
-  <div class="mt-4">
-    <form action="{{ url_for('clear_dashboard') }}" method="POST" onsubmit="return confirm('Are you sure you want to clear all your data?');">
-      <button type="submit" class="btn btn-outline-danger">🗑️ Clear Dashboard Data</button>
-    </form>
-  </div>
-
-  <!-- Loan Calculator -->
-  <div class="card shadow-sm p-3 mt-5 mb-5">
-    <h5>🏦 Loan Calculator</h5>
-    <form method="POST">
-      <div class="row g-2">
-        <div class="col-md-4">
-          <input type="number" step="0.01" class="form-control" name="principal" placeholder="Principal Amount (₹)" required>
-        </div>
-        <div class="col-md-4">
-          <input type="number" step="0.01" class="form-control" name="annual_rate" placeholder="Annual Interest Rate (%)" required>
-        </div>
-        <div class="col-md-4">
-          <input type="number" step="0.1" class="form-control" name="years" placeholder="Years" required>
-        </div>
-      </div>
-      <button type="submit" name="loan_submit" class="btn btn-success mt-3">Calculate</button>
-    </form>
-
-    {% if loan_result %}
-      <div class="mt-3">
-        <p>💵 Monthly EMI: ₹{{ loan_result.emi }}</p>
-        <p>💰 Total Payment: ₹{{ loan_result.total_payment }}</p>
-        <p>💸 Total Interest: ₹{{ loan_result.total_interest }}</p>
-      </div>
-    {% endif %}
-  </div>
-
 </div>
+        <!-- RIGHT: Smart Goals (MOVED & RESIZED) -->
+        <div class="col-xl-7">
+          <div class="fintrack-card reveal" data-delay="1.0s">
+            <h3 class="card-title mb-4">Smart Goals</h3>
+            
+            <!-- Goal Input Form -->
+            <div class="goals-form mb-4">
+              <form action="{{ url_for('add_goal') }}" method="POST" class="row g-2">
+                <div class="col-md-5">
+                  <input type="text" name="goal_title" class="form-control" placeholder="Goal Name" required>
+                </div>
+                <div class="col-md-4">
+                  <input type="number" name="goal_amount" class="form-control" placeholder="Target ₹" required>
+                </div>
+                <div class="col-md-3">
+                  <select name="priority" class="form-control" required>
+                    <option value="">Priority</option>
+                    <option value="1">1 </option>
+                    <option value="2">2 </option>
+                    <option value="3">3 </option>
+                    <option value="4">4 </option>
+                    <option value="5">5 </option>
+                    <option value="6">6 </option>
+                    <option value="7">7 </option>
+                    <option value="8">8 </option>
+                    <option value="9">9 </option>
+                    <option value="10">10 </option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="gradient-btn btn-sm w-100">Add Goal</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Goals Table -->
+            {% if predicted_goals %}
+            <div class="table-responsive">
+              <table class="table table-sm goals-table mb-0">
+                <thead>
+                  <tr><th>Goal</th><th>Target</th><th>Current</th><th>Progress</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                  {% for p in predicted_goals[:5] %}
+                  <tr>
+                    <td class="small fw-bold">{{ p.goal.title[:25] }}</td>
+                    <td class="small">₹{{ p.goal.target_amount|round(0) }}</td>
+                    <td class="small">₹{{ p.achieved_amount|round(0)|int }}</td>
+                    <td class="small">
+                      <div class="progress progress-sm mb-1">
+                        <div class="progress-bar" style="width: {{ p.progress_percent }}%"></div>
+                      </div>
+                      <small>{{ p.progress_percent }}%</small>
+                    </td>
+                    <td>
+                      <form action="{{ url_for('delete_goal', goal_id=p.goal.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this goal?')">
+                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Delete Goal">🗑️</button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <p class="text-muted small">No goals set. Add one above!</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- FULL WIDTH: Ask Expenzo AI Module (NEW, HIGHLIGHTED) -->
+      <div class="fintrack-card ai-glow reveal mb-5" data-delay="1.1s">
+        <h3 class="card-title mb-4">Ask Expenzo AI</h3>
+        
+        <div class="ai-description mb-4 p-4 rounded" style="background: rgba(248, 250, 252, 0.7); font-size: 1.1rem; line-height: 1.7; color: #475569; border-left: 4px solid #3b82f6;">
+          Your personal finance assistant. Let our AI analyze your income, expenses, and goals to provide personalized money-saving insights and a summary of your financial health.
+        </div>
+        
+        <div class="text-center">
+       <button onclick="openChatbot()" class="gradient-btn mx-auto d-block mt-3 mb-2" style="width: 50%; max-width: 280px;">
+  🤖 Open AI Assistant
+</button>
+        </div>
+      </div>
+
+      <!-- FULL WIDTH: Loan EMI Calculator (NEW, uses backend) -->
+      <div class="fintrack-card reveal mb-5" data-delay="1.25s">
+  <h3 class="card-title mb-4">💳 Loan & EMI Manager</h3>
+
+  <div class="row g-4">
+
+    <!-- LEFT: EMI CALCULATOR -->
+    <div class="col-md-6">
+      <div class="inner-card p-3 h-100">
+        <h5 class="mb-3">Loan EMI Calculator</h5>
+
+        <form method="POST">
+          <input type="hidden" name="loan_submit" value="1">
+
+          <div class="mb-2">
+            <input type="number" name="principal" class="form-control" placeholder="Loan Amount ₹" required step="0.01">
+          </div>
+
+          <div class="mb-2">
+            <input type="number" name="annual_rate" class="form-control" placeholder="Interest Rate %" step="0.01" required>
+          </div>
+
+          <div class="mb-2">
+            <input type="number" name="years" class="form-control" placeholder="Tenure (Years)" required>
+          </div>
+
+          <button type="submit" class="gradient-btn w-100 mt-2">Calculate EMI</button>
+        </form>
+
+        {% if loan_result %}
+        <div class="mt-3 border-top pt-3">
+          <p><strong>EMI:</strong> ₹{{ loan_result.emi|round(0) }}</p>
+          <p><strong>Total:</strong> ₹{{ loan_result.total_payment|round(0) }}</p>
+          <p><strong>Interest:</strong> ₹{{ loan_result.total_interest|round(0) }}</p>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- RIGHT: ACTIVE LOANS -->
+    <div class="col-md-6">
+      <div class="inner-card p-3 h-100">
+
+        <div class="d-flex justify-content-between mb-3">
+          <h5>Active EMIs</h5>
+          <span class="badge bg-success">₹{{ total_emi|round(0) }}</span>
+        </div>
+
+        {% if active_loans %}
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>EMI</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for loan in active_loans %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>₹{{ loan.monthly_emi|round(0) }}</td>
+                <td>
+                  <form action="{{ url_for('delete_loan', loan_id=loan.id) }}" method="POST">
+                    <button class="btn btn-sm btn-outline-danger">✖</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="text-muted">No active EMIs</p>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+      <!-- FINAL: Transactions Table (MOVED TO BOTTOM) --> 
+      <!-- FINAL: Transactions Table -->
+<div class="fintrack-card reveal" data-delay="1.3s">
+  <h3 class="card-title mb-4">Recent Transactions</h3>
+
+  {% if expenses %}
+  <div class="table-responsive">
+    <table class="table transaction-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th class="text-end">Amount</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for e in expenses[:10] %}
+        <tr class="transaction-row">
+
+          <!-- Title -->
+          <td>{{ e.title[:30] }}</td>
+
+          <!-- Category -->
+          <td>
+            <span class="badge 
+              {% if e.category == 'Shopping' %}
+                bg-soft-danger
+              {% elif e.category == 'Bills' %}
+                bg-soft-success
+              {% else %}
+                bg-soft-warning
+              {% endif %}
+            ">
+              {{ e.category or 'Other' }}
+            </span>
+          </td>
+
+          <!-- Amount -->
+          <td class="text-end">
+            <strong class="{% if e.amount < 0 %}amount-negative{% else %}text-success{% endif %}">
+              ₹{{ e.amount|abs|round(0) }}
+            </strong>
+          </td>
+
+          <!-- Date -->
+          <td>
+            {{ e.date_recorded.strftime('%d %b') if e.date_recorded else 'Today' }}
+          </td>
+
+          <!-- ACTIONS (EDIT + DELETE) -->
+          <td>
+  <div class="action-btns">
+
+    <!-- EDIT -->
+    <a href="{{ url_for('edit_expense', expense_id=e.id) }}"
+       class="btn btn-sm btn-outline-primary rounded-pill">
+      ✏️
+    </a>
+
+    <!-- DELETE -->
+    <form action="{{ url_for('delete_expense', expense_id=e.id) }}"
+          method="POST"
+          class="d-inline">
+      <button type="submit"
+              class="btn btn-sm btn-outline-danger rounded-pill"
+              onclick="return confirm('Delete?')">
+        🗑️
+      </button>
+    </form>
+
+  </div>
+</td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+  {% else %}
+    <p class="text-muted">No transactions yet.</p>
+  {% endif %}
+</div>
+</div>
+
+<div class="export-box mb-4">
+  <a href="{{ url_for('export_csv') }}" class="export-btn csv-btn">
+    Download CSV Report
+  </a>
+
+  <a href="{{ url_for('export_pdf') }}" class="export-btn pdf-btn">
+     Download PDF Report
+  </a>
+</div>
+
+
+<!-- transactions -->
+<script>
+const revealElements = document.querySelectorAll('.reveal');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('active');
+    } else {
+      entry.target.classList.remove('active');
+    }
+  });
+}, {
+  threshold: 0.15
+});
+
+revealElements.forEach((el) => observer.observe(el));
+</script>
+
+
+
+
+
+
+<!-- Dynamic Chart JS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Animate cards
+  const cards = document.querySelectorAll('.animate-slide-up');
+  cards.forEach((card, index) => {
+    card.style.animationDelay = (index * 0.1) + 's';
+  });
+
+// Dynamic Expense Chart
+const ctx = document.getElementById('expenseChart');
+
+if (ctx) {
+ const labels = {{ expense_labels|default([])|tojson|safe }};
+const data = {{ expense_values|default([])|tojson|safe }};
+
+  const colors = ['#a7f3d0', '#dbeafe', '#fed7aa', '#f9a8d4', '#e0e7ff', '#d1fae5', '#f3e8ff'];
+
+  // Backup original chart data
+  window.originalChartData = {
+    labels: labels,
+    data: data,
+    colors: colors.slice(0, labels.length)
+  };
+
+  // Create chart
+  window.expenseChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: colors.slice(0, labels.length),
+        borderWidth: 0,
+        hoverOffset: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        animateRotate: true,
+        duration: 2000
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 20,
+            usePointStyle: true,
+            font: { size: 13 }
+          }
+        }
+      }
+    }
+  });
+}
+});
+
+</script>
+
+<script>
+function openChatbot() {
+   window.open("/chatbot")
+}
+</script>
+
 {% endblock %}
+

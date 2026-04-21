@@ -1,11 +1,37 @@
 /* ========== Global ========== */
 body {
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  background: #f4f6f9;
+background: linear-gradient(135deg, #cce3de 0%, #6baed6 50%, #f7fbfc 100%);
+  background-attachment: fixed;
   color: #333;
+  transition: background 0.3s ease, color 0.3s ease;
 }
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 4px;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 h1, h2, h3 {
   font-weight: 600;
@@ -17,62 +43,133 @@ a {
 }
 
 /* ========== Navbar ========== */
-/* Only EXPENZO Highlight */
-.navbar-brand .highlight {
-    font-size: 1.6rem;
+
+
+.custom-navbar {            
+  width: 90%;
+  margin: 15px auto;
+  background: #ffffff;
+  border-radius: 30px;
+  z-index: 1000;
+  margin: 10px auto;
+ 
+}
+
+
+.highlight {
+  font-weight: 800;
+  font-size: 30px;
+  background: linear-gradient(90deg, #4f46e5, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.highlight:hover {
+  font-weight: 800;
+  font-size: 30px;
+  color: #4f46e5;
+  text-shadow: 0 0 8px rgba(79, 70, 229, 0.4);
+}
+.subtitle {
+  font-size: 25px;
+  color: black;
+  font-weight: 700;   /* 🔥 control boldness */
+
+  
+}
+
+/* Make text dark like in image */
+.custom-navbar .nav-link,
+.custom-navbar .navbar-brand {
+  color: #000 !important;
+  font-weight: 500;
+}
+
+/* Active / hover effect */
+.custom-navbar .nav-link:hover {
+  color: #555 !important;
+}
+
+
+/* Buttons styling */
+.custom-navbar .btn {
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+
+.logo-fin {
+  color: #3b82f6;
+  transition: all 0.3s ease;
     font-weight: 800;
-    color: #ffc107; /* golden */
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: 0.3s ease-in-out;
+  font-size: 25px;
 }
 
-.navbar-brand .highlight:hover {
-    color: #ffda6a; /* lighter golden */
-    text-shadow: 0 0 8px rgba(255, 193, 7, 0.8);
+.logo-fin:hover {
+  color: #2563eb;  /* slightly darker blue */
+  text-shadow: 0 0 4px rgba(59, 130, 246, 0.4);
+
+}
+
+/* Username badge */
+.custom-navbar .text-warning {
+  background: rgba(0, 0, 0, 0.7) !important;
+  border-radius: 20px;
 }
 
 
-/* Highlighted username */
-.username-highlight {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ffc107;  /* golden */
-    background: #333;
-    padding: 4px 10px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: 0.3s ease-in-out;
+.username-badge {
+  font-weight: bold;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #111; 
+  color: #2c528f;  
+  transition: all 0.3s ease;
 }
 
-.username-highlight:hover {
-    background: #444;
-    color: #ffda6a; /* lighter golden */
-    text-shadow: 0 0 6px rgba(255, 193, 7, 0.8);
+
+.username-badge:hover {
+  color: #60a5fa;
+  text-shadow: 0 0 8px #3b82f6,
+               0 0 16px #3b82f6,
+               0 0 24px #60a5fa;
 }
 
-/* Small circular avatar/icon with username */
-.username-avatar {
-    background: #ffc107; /* golden circle */
-    color: #222; 
-    font-weight: bold;
-    font-size: 0.9rem;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
 
 /* ========== Container ========== */
-.container {
+.hero {
+  padding-top: 20px;
+
+}
+
+.hero h1 {
+  font-weight: 700;
+  font-size: 3rem;
+  line-height: 1.2;
+}
+
+.hero p {
+  color: #6b7280;
+  font-size: 1.1rem;
+  max-width: 500px;
+}
+.btn-primary-custom {
+  background: #3b82f6;   /* blue */
+  border: none;
+  color: white;
+  border-radius: 30px;
+  padding: 10px 25px;
+}
+
+.btn-primary-custom:hover {
+  background: #2563eb;   /* darker blue on hover */
+}
+
+
+/* .container {
   padding: 22px;
   max-width: 1200px;
   margin: auto;
-}
+} */
 
 /* ========== Flash Messages ========== */
 .flash-area .flash {
@@ -158,22 +255,385 @@ button:hover {
 }
 
 /* ========== Review Section ========== */
-.review-card {
-  background: #fff;
-  border-radius: 10px;
+.review-section-card {
+  margin-top: 60px;
   padding: 20px;
-  margin: 15px 0;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  border-radius: 20px;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: white;
+  text-align: center;
 }
 
-.review-card blockquote {
-  font-style: italic;
-  margin: 0;
-  color: #555;
+.review-section {
+  margin-top: 60px;
+  padding: 20px;
+  border-radius: 20px;
+  background: white;
+  color: black;
+  text-align: center;
 }
 
-.review-card footer {
-  margin-top: 10px;
+
+.review-title {
+  margin-bottom: 30px;
+  font-weight: 500;
+  color:white;
+}
+
+.review-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.review-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  padding: 20px;
+  width: 280px;
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.stars {
+  color: gold;
+  margin-bottom: 10px;
+}
+
+.role {
   font-size: 0.9rem;
-  color: #777;
+  color: #cbd5f5;
+}
+
+.text {
+  font-style: italic;
+  margin-top: 10px;
+
+}
+/* ========== Feature Section ========== */
+/* Card styling */
+
+.feature-card {
+  border: none;
+  border-radius: 15px;
+  transition: 0.3s;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  background: #ffffff;
+  color: #333;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  color: #ffffff;
+    background: linear-gradient(135deg, #4f8cff, #6ea8ff);
+}
+
+.review-stars {
+  color: gold;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.delete-review-btn {
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.delete-review-btn:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.review-card {
+  transition: all 0.2s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+
+/* Icon container */
+.icon-box {
+  width: 70px;
+  height: 70px;
+  margin: auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+}
+
+/* Icon image */
+.icon-box img {
+  width: 60px;
+  height: 60px;
+}
+
+/* ================= PREMIUM DARK MODE (GLOBAL FIX) ================= */
+
+body.dark-mode {
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: #e2e8f0;
+}
+
+/* Headings */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3 {
+  color: #f8fafc;
+}
+
+/* Paragraphs */
+body.dark-mode p {
+  color: #94a3b8;
+}
+
+/* ================= NAVBAR ================= */
+body.dark-mode .custom-navbar {
+  background: rgba(15, 23, 42, 0.9) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+body.dark-mode .custom-navbar .nav-link {
+  color: #e2e8f0 !important;
+}
+
+body.dark-mode .custom-navbar .nav-link:hover {
+  color: #60a5fa !important;
+}
+
+/* Logo */
+body.dark-mode .logo-fin {
+  color: #60a5fa;
+}
+
+/* ================= HERO ================= */
+body.dark-mode .hero p {
+  color: #94a3b8;
+}
+
+/* ================= CARDS (GLOBAL) ================= */
+body.dark-mode .stats .card,
+body.dark-mode .about-section,
+body.dark-mode .feature-card,
+body.dark-mode .review-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+  color: #e2e8f0;
+}
+
+/* Hover glow effect */
+body.dark-mode .feature-card:hover {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+}
+
+/* ================= ABOUT SECTION ================= */
+body.dark-mode .about-section {
+  background: rgba(30, 41, 59, 0.6);
+}
+
+/* ================= REVIEW SECTION ================= */
+body.dark-mode .review-section {
+  background: linear-gradient(135deg, #020617, #0f172a);
+}
+
+/* ================= FORMS ================= */
+body.dark-mode input,
+body.dark-mode select {
+  background: #020617;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+body.dark-mode input::placeholder {
+  color: #64748b;
+}
+
+/* ================= BUTTONS ================= */
+body.dark-mode button,
+body.dark-mode .btn-primary-custom {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+}
+
+body.dark-mode button:hover {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+}
+
+/* ================= FLASH MESSAGES ================= */
+body.dark-mode .flash.success {
+  background: rgba(34,197,94,0.2);
+  color: #4ade80;
+}
+
+body.dark-mode .flash.danger {
+  background: rgba(239,68,68,0.2);
+  color: #f87171;
+}
+
+body.dark-mode .flash.info {
+  background: rgba(59,130,246,0.2);
+  color: #60a5fa;
+}
+
+/* ================= TEXT FIXES ================= */
+body.dark-mode .subtitle {
+  color: #e2e8f0;
+}
+
+/* ================= USERNAME BADGE ================= */
+body.dark-mode .username-badge {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
+/* ================= SCROLLBAR ================= */
+body.dark-mode ::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+}
+
+/* ================= EXTRA PREMIUM TOUCH ================= */
+
+/* Soft glow on hover */
+body.dark-mode .card:hover,
+body.dark-mode .feature-card:hover,
+body.dark-mode .review-card:hover {
+  box-shadow: 0 10px 40px rgba(59, 130, 246, 0.2);
+}
+
+/* Smooth transitions everywhere */
+body.dark-mode * {
+  transition: all 0.25s ease;
+}
+
+/* ================= SAFE DARK MODE (PAGE SCOPED) ================= */
+
+/* ===== ABOUT PAGE ===== */
+body.dark-mode.about-page .about-section {
+  background: rgba(15, 23, 42, 0.85);
+  color: #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+}
+
+body.dark-mode.about-page .about-section h2 {
+  color: #f8fafc;
+}
+
+body.dark-mode.about-page .about-section p {
+  color: #94a3b8;
+}
+
+
+/* ===== REVIEW PAGE ===== */
+
+
+/* ===== ADMIN LOGIN ===== */
+body.dark-mode.admin-page .login-card {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 20px;
+  color: #e2e8f0;
+}
+
+/* Inputs */
+body.dark-mode.admin-page input {
+  background: #020617;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+body.dark-mode.admin-page input::placeholder {
+  color: #64748b;
+}
+
+/* Labels */
+body.dark-mode.admin-page label {
+  color: #cbd5f5;
+}
+
+/* Button */
+body.dark-mode.admin-page .login-card button {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+}
+
+/* ===== DARK MODE ADMIN LOGIN PAGE ===== */
+
+body.dark-mode.admin-page {
+  background: radial-gradient(circle at top, #0f172a, #020617);
+}
+
+/* Login Card */
+body.dark-mode.admin-page .login-card {
+  background: linear-gradient(135deg, #1e293b, #020617);
+  border: 1px solid #334155;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+  backdrop-filter: blur(10px);
+}
+
+/* Heading */
+body.dark-mode.admin-page h3 {
+  color: #22c55e;
+}
+
+/* Subtitle */
+body.dark-mode.admin-page p {
+  color: #94a3b8;
+}
+
+/* Labels */
+body.dark-mode.admin-page label {
+  color: #cbd5f5;
+}
+
+/* Inputs */
+body.dark-mode.admin-page .form-control {
+  background: #020617;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+/* Placeholder */
+body.dark-mode.admin-page .form-control::placeholder {
+  color: #64748b;
+}
+
+/* Focus effect */
+body.dark-mode.admin-page .form-control:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34,197,94,0.25);
+}
+
+/* Button */
+body.dark-mode.admin-page .btn-success {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  box-shadow: 0 5px 20px rgba(34,197,94,0.4);
+}
+
+body.dark-mode.admin-page .btn-success:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(34,197,94,0.6);
+}
+
+/* Footer text */
+body.dark-mode.admin-page small {
+  color: #64748b;
 }

@@ -4,58 +4,97 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>{% block title %}Personal Finance{% endblock %}</title>
+  <title>{% block title %}FinTrack{% endblock %}</title>
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fintrak-dashboard.css') }}">
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-  <!-- Navbar -->
-  <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="{{ url_for('home') }}">
-  <span class="highlight">💵EXPENZO</span> - The Finance Tracker
-</a>
+  
+  <!-- Dark Toggle JS -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('darkToggle');
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    // restore saved mode
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        if (toggle) toggle.checked = true;
+    }
+
+    if (toggle) {
+        toggle.addEventListener('change', function () {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem(
+                'darkMode',
+                document.body.classList.contains('dark-mode')
+            );
+        });
+    }
+});
+</script>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <!-- Navbar -->
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top custom-navbar">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
+      <span class="highlight  me-1">FinTrack</span>
+      <span class="subtitle d-none d-sm-inline">- A Finance Tracker</span>
+    </a>
+
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
+    
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto align-items-center">
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link fw-bold" href="{{ url_for('home') }}">Home</a></li>
         {% if current_user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link fw-bold text-primary" href="{{ url_for('dashboard') }}">Dashboard</a></li>
         {% endif %}
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About Us</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('review') }}">Review</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_login') }}">Admin</a></li>
+        <li class="nav-item"><a class="nav-link fw-bold" href="{{ url_for('about') }}">About Us</a></li>
+        <li class="nav-item"><a class="nav-link fw-bold" href="{{ url_for('review') }}">Review</a></li>
+        <li class="nav-item"><a class="nav-link fw-bold" href="{{ url_for('admin_login') }}">Admin</a></li>
+        
+        <!-- Dark mode toggle placeholder -->
+        <li class="nav-item ms-2 me-3">
+          <div class="form-check form-switch" style="cursor: pointer;">
+            <input class="form-check-input" type="checkbox" role="switch" id="darkToggle" style="cursor: pointer;">
+          </div>
+        </li>
       </ul>
 
       <!-- Right Section: Username + Logout/Login/Register -->
-      <ul class="navbar-nav ms-3 align-items-center">
+      <ul class="navbar-nav align-items-center">
         {% if current_user.is_authenticated %}
-          <li class="nav-item">
-            <span class="fw-bold ms-2 px-3 py-1 rounded text-warning bg-dark">
+          <li class="nav-item me-3">
+            <span class="username-badge">
               👋 {{ current_user.name or current_user.email }}
             </span>
           </li>
-          <li class="nav-item ms-2">
-            <a class="btn btn-sm btn-outline-light" href="{{ url_for('logout') }}">Logout</a>
+          <li class="nav-item">
+            <a class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" href="{{ url_for('logout') }}">Logout</a>
           </li>
         {% else %}
-          <li class="nav-item"><a class="btn btn-sm btn-light me-2" href="{{ url_for('login') }}">Login</a></li>
-          <li class="nav-item"><a class="btn btn-sm btn-primary" href="{{ url_for('register') }}">Register</a></li>
+          <li class="nav-item"><a class="btn btn-sm btn-outline-primary rounded-pill px-3 me-2" href="{{ url_for('login') }}">Login</a></li>
+          <li class="nav-item"><a class="fin-btn btn-sm" href="{{ url_for('register') }}">Register</a></li>
         {% endif %}
       </ul>
     </div>
   </div>
 </nav>
+
+<!-- Push main content down -->
+<div style="height: 80px;"></div>
 
 
   <!-- Flash messages -->
@@ -80,4 +119,5 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+{% block scripts %}{% endblock %}
 </html>

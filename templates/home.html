@@ -1,83 +1,137 @@
+
 {% extends 'base.html' %}
 {% block title %}Home - Personal Finance Tracker{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="text-center p-5 bg-light shadow-sm rounded-3 mb-4">
-  <h1 class="display-4 fw-bold">💰 Take Control of Your Finances</h1>
-  <p class="lead">Track income, manage expenses, and achieve your financial goals with ease.</p>
-  <div class="mt-3">
-    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-2">Get Started</a>
-    <a href="{{ url_for('login') }}" class="btn btn-outline-dark btn-lg">Login</a>
+<section class="hero container  " data-aos="fade-up">
+  <div class="row align-items-center">
+    
+    <!-- Left -->
+    <div class="col-md-6" >
+      <span class="badge bg-light text-primary mb-3">Your Money, Your Control</span>
+      <h1>Take Control of Your Financial Future</h1>
+      <p class="mt-3">
+        Track your spending, manage budgets, and achieve your financial goals 
+        all in one easy-to-use platform.
+      </p>
+
+      <div class="mt-4">
+        <a href="{{ url_for('register') }}" class="btn btn-primary-custom bg-blue me-2">Get Started</a>
+        <a href="{{ url_for('login') }}" class="btn btn-outline-dark btn-outline-custom">Login</a>
+      </div>
+    </div>
+
+    <!-- Right (Mock Image) -->
+    <div class="col-md-6 text-center">
+      <img src="https://via.placeholder.com/300x500" class="img-fluid rounded-4 shadow" alt="">
+    </div>
+
   </div>
 </section>
+
+
+
 
 <!-- Features -->
 <div class="container mt-5">
   <div class="row g-4">
-    <div class="col-md-3">
-      <div class="card text-center shadow-sm h-100">
+
+    <!-- Card 1 -->
+    <div class="col-md-3" data-aos="zoom-in">
+      <div class="card text-center feature-card income h-100">
         <div class="card-body">
-          <h2 class="fs-1">📊</h2>
-          <h5 class="card-title">Track Income</h5>
+          
+          <div class="icon-box">
+          <img src="{{ url_for('static', filename='images/income.png') }}">
+          </div>
+
+          <h5 class="card-title mt-3">Track Income</h5>
           <p class="card-text">Add and monitor your monthly income sources easily.</p>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card text-center shadow-sm h-100">
+
+    <!-- Card 2 -->
+    <div class="col-md-3" data-aos="zoom-in">
+      <div class="card text-center feature-card expense h-100">
         <div class="card-body">
-          <h2 class="fs-1">💸</h2>
-          <h5 class="card-title">Manage Expenses</h5>
+          
+          <div class="icon-box">
+            <img src="{{ url_for('static', filename='images/expense.png') }}" alt="expense">
+          </div>
+
+          <h5 class="card-title mt-3">Manage Expenses</h5>
           <p class="card-text">Stay on top of your daily, monthly, and yearly expenses.</p>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card text-center shadow-sm h-100">
+
+    <!-- Card 3 -->
+    <div class="col-md-3" data-aos="zoom-in">
+      <div class="card text-center feature-card goals h-100">
         <div class="card-body">
-          <h2 class="fs-1">🎯</h2>
-          <h5 class="card-title">Set Goals</h5>
+          
+          <div class="icon-box">
+            <img src="{{ url_for('static', filename='images/goals.png') }}" alt="goals">
+          </div>
+
+          <h5 class="card-title mt-3">Set Goals</h5>
           <p class="card-text">Plan for your dream bike, gadget, or future investment.</p>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card text-center shadow-sm h-100">
+
+    <!-- Card 4 -->
+    <div class="col-md-3" data-aos="zoom-in">
+      <div class="card text-center feature-card insights h-100">
         <div class="card-body">
-          <h2 class="fs-1">📈</h2>
-          <h5 class="card-title">Get Insights</h5>
+          
+          <div class="icon-box">
+            <img src="{{ url_for('static', filename='images/insights.png') }}" alt="insights">
+          </div>
+
+          <h5 class="card-title mt-3">Get Insights</h5>
           <p class="card-text">Visualize your progress with beautiful charts and reports.</p>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
 <!-- Reviews Section -->
-<section class="bg-dark text-white text-center mt-5 p-5 rounded-3">
-  <h2 style="color: white;">💬 What Our Users Say </h2>
-  <div class="row mt-4">
-    <div class="col-md-4">
-      <blockquote class="blockquote">
-        <p>"This app helped me save for my first bike. Super easy!"</p>
-        <footer class="blockquote-footer text-white">Rohit, Student</footer>
-      </blockquote>
+<section class="review-section-card">
+  <h3 class="review-title">
+    What Our Users Say
+  </h3>
+
+  <div class="review-container " data-aos="fade-up">
+
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <h5>Rohit</h5>
+      <p class="role">Student</p>
+      <p class="text">"This app helped me save for my first bike. Super easy!"</p>
     </div>
-    <div class="col-md-4">
-      <blockquote class="blockquote">
-        <p>"Now I know exactly where my money goes every month."</p>
-        <footer class="blockquote-footer text-white">Priya, Designer</footer>
-      </blockquote>
+
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <h5>Priya</h5>
+      <p class="role">Designer</p>
+      <p class="text">"Now I know exactly where my money goes every month."</p>
     </div>
-    <div class="col-md-4">
-      <blockquote class="blockquote">
-        <p>"The goals feature kept me motivated to reduce expenses."</p>
-        <footer class="blockquote-footer text-white">Amit, Manager</footer>
-      </blockquote>
+
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <h5>Amit</h5>
+      <p class="role">Manager</p>
+      <p class="text">"The goal feature kept me motivated to reduce expenses."</p>
     </div>
+
   </div>
 </section>
+
 
 <!-- Footer -->
 <footer class="text-center mt-5 p-3 border-top">
