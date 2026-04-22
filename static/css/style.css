@@ -53,17 +53,14 @@ a {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(30px);
   border-radius: 30px;
-
   display: flex;
   align-items: center;
-
   box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-
   z-index: 1000;
- width: 100%;
+ width: 95%;
     position: sticky;
   top: 0;
-  margin: 30px auto
+  margin: 10px auto
 }
  
 .custom-navbar .nav-link {
@@ -97,7 +94,7 @@ a {
 .custom-navbar .navbar-nav {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 5px;
 }
 
 .highlight {
