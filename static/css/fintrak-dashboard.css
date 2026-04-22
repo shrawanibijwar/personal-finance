@@ -171,10 +171,49 @@
 }
 
 /* ================= AI SECTION ================= */
-.ai-glow{
-  background:#fff;
-  border-radius:16px;
-  border:1px solid #e0e7ff;
+/* ================= AI INSIGHTS BOX ================= */
+
+.ai-insight-box {
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  border-left: 5px solid #6366f1;
+  border-radius: 14px;
+  padding: 18px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #334155;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* Headings inside AI response */
+.ai-insight-box h1,
+.ai-insight-box h2,
+.ai-insight-box h3 {
+  color: #4f46e5;
+  font-weight: 700;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+/* Bullet points */
+.ai-insight-box ul {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.ai-insight-box li {
+  margin-bottom: 6px;
+}
+
+/* Better spacing for paragraphs */
+.ai-insight-box p {
+  margin-bottom: 10px;
+}
+
+/* Dark mode */
+body.dark-mode .ai-insight-box {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #e2e8f0;
+  border-left: 5px solid #60a5fa;
 }
 
 /* ================= INNER CARD ================= */

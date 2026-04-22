@@ -48,15 +48,25 @@ a {
 /* ========== Navbar ========== */
 
 
-.custom-navbar {            
+.custom-navbar {
+  position: fixed;
+  top: 10px;
+  left: 0;
+  right: 0;
+
   width: 90%;
-  margin: 15px auto;
+  margin: 8px auto;
+  height: 60px;
+  padding: 0 20px;
   background: #ffffff;
   border-radius: 30px;
   z-index: 1000;
-  margin: 10px auto;
- 
+
+  display: flex;
+  align-items: center;
 }
+ 
+
 
 
 .highlight {

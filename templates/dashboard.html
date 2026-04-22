@@ -45,7 +45,7 @@
   <div class="row g-4 mb-5 summary-row">
 
   <!-- CARD 1 -->
-  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+  <div class="col-6 col-sm-6 col-md-3">
     <div class="fintrack-card reveal summary-card h-100">
       <h4>Total Income</h4>
       <p class="amount">
@@ -55,7 +55,7 @@
   </div>
 
   <!-- CARD 2 -->
-  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+  <div class="col-6 col-sm-6 col-md-3">
     <div class="fintrack-card reveal summary-card h-100">
       <h4>Total Expenses</h4>
       <p class="amount text-danger">
@@ -65,7 +65,7 @@
   </div>
 
   <!-- CARD 3 -->
-  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+  <div class="col-6 col-sm-6 col-md-3">
     <div class="fintrack-card reveal summary-card h-100">
       <h4>Remaining Balance</h4>
       <p class="amount {% if (monthly_income|default(0)|float - monthly_expenses|default(0)|float) < 0 %}text-danger{% else %}text-success{% endif %}">
@@ -75,7 +75,7 @@
   </div>
 
   <!-- CARD 4 -->
-  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+  <div class="col-6 col-sm-6 col-md-3">
     <div class="fintrack-card reveal summary-card h-100">
       <h4>Predicted Spending</h4>
 
@@ -98,9 +98,9 @@
       <h3 class="card-title mb-4"> AI Financial Insights</h3> 
 
       {% if ai_insights and 'Please add' not in ai_insights %}
-        <div class="p-4 rounded bg-light ai-insight-box">
-          {{ ai_insights | safe }}
-        </div>
+   <div class="p-4 rounded ai-insight-box">
+  {{ ai_insights | replace('\n', '<br>') | safe }}
+</div>
       {% else %}
         <div class="text-center p-5 py-4">
           <i class="fas fa-chart-line fs-1 text-muted mb-3"></i>
@@ -115,10 +115,10 @@
   </div>
 </div>
 
-<div class="row g-4 mb-5 align-items-stretch dashboard-flex-row">
+<div class="row g-4 mb-5 align-items-stretch  dashboard-flex-row">
 
   <!-- LEFT -->
-  <div class="col-xl-8 d-flex">
+  <div class="col-xl-8  d-flex">
     <div class="fintrack-card chart-container reveal mb-5 w-100">
       <h3 class="card-title mb-4">Expense Breakdown</h3>
       <div class="chart-wrapper">
