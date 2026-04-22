@@ -8,6 +8,9 @@ background: linear-gradient(135deg, #cce3de 0%, #6baed6 50%, #f7fbfc 100%);
   color: #333;
   transition: background 0.3s ease, color 0.3s ease;
 }
+main {
+  padding-top: 90px;
+}
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
@@ -195,11 +198,11 @@ a {
 }
 
 /* ========== Forms ========== */
-form input,
-form select {
+.auth-form input,
+.auth-form select {
   padding: 10px;
   margin-bottom: 10px;
-  width: 260px;
+  width:100%;
   border: 1px solid #ccc;
   border-radius: 6px;
 }
@@ -354,14 +357,7 @@ button:hover {
   color: white;
 }
 
-.review-card {
-  transition: all 0.2s ease;
-}
 
-.review-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
 
 
 /* Icon container */
@@ -518,9 +514,13 @@ body.dark-mode .review-card:hover {
   box-shadow: 0 10px 40px rgba(59, 130, 246, 0.2);
 }
 
-/* Smooth transitions everywhere */
-body.dark-mode * {
-  transition: all 0.25s ease;
+/*  transitions */
+body.dark-mode .card,
+body.dark-mode .feature-card,
+body.dark-mode .review-card,
+body.dark-mode button,
+body.dark-mode input {
+ transition: 0.25s ease;
 }
 
 /* ================= SAFE DARK MODE (PAGE SCOPED) ================= */
@@ -542,7 +542,48 @@ body.dark-mode.about-page .about-section p {
 }
 
 
-/* ===== REVIEW PAGE ===== */
+/* ===== Login Register ===== */
+/* ================= AUTH PAGES (LOGIN / REGISTER) ================= */
+
+.auth-center-card {
+  max-width: 450px;
+  width: 100%;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+/* LIGHT MODE */
+.auth-light {
+  background: #ffffff;
+}
+
+/* DARK MODE */
+body.dark-mode .auth-light {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #e2e8f0;
+  backdrop-filter: blur(12px);
+}
+
+/* Inputs in auth pages */
+body.dark-mode .auth-form input {
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+body.dark-mode .auth-form input::placeholder {
+  color: #64748b;
+}
+
+/* Headings */
+body.dark-mode .auth-center-card h3 {
+  color: #60a5fa;
+}
+
+body.dark-mode .auth-center-card p {
+  color: #94a3b8;
+}
 
 
 /* ===== ADMIN LOGIN ===== */
@@ -637,3 +678,5 @@ body.dark-mode.admin-page .btn-success:hover {
 body.dark-mode.admin-page small {
   color: #64748b;
 }
+
+

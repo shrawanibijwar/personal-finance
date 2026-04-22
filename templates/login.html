@@ -3,14 +3,14 @@
 
 {% block content %}
 <div class="d-flex justify-content-center align-items-center" style="min-height:80vh;">
-  <div class="card shadow-lg p-4" style="max-width: 420px; width: 100%; border-radius: 15px; background: #fdfdfd;">
+  <div class="card shadow-lg p-4 auth-center-card auth-light">
     <div class="text-center mb-4">
       <h3 class="fw-bold text-success">🔑 User Login</h3>
       <p class="text-muted">Access your personal finance dashboard</p>
     </div>
 
     <!-- Form -->
-    <form method="post">
+    <form method="post" class="auth-form">
       <div class="mb-3">
         <label for="email" class="form-label fw-semibold">Email</label>
         <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Enter your email" required>
@@ -20,7 +20,7 @@
         <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Enter your password" required>
       </div>
 
-      <button type="submit" class="btn btn-success w-100 btn-lg shadow-sm">Login</button>
+      <button type="submit" class="custom-btn btn-success w-100 btn-lg shadow-sm">Login</button>
     </form>
 
     <!-- Extra info -->

@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Add Review{% endblock %}
 
-{% block body_class %}
-review-page
-{% endblock %}
+{% block body_class %}review-page{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
   <div class="card p-4 shadow review-section">
     <h3 class="mb-3">✍️ Add Your Review</h3>
-    <form method="POST" action="{{ url_for('add_review') }}">
+    <form method="POST" action="{{ url_for('add_review') }}" class="auth-form">
       <div class="mb-3">
         <label class="form-label">Name (optional)</label>
         <input type="text" name="name" class="form-control" placeholder="Your name" maxlength="100">

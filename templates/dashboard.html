@@ -43,47 +43,54 @@
 
   <!-- Top Summary Cards -->
   <div class="row g-4 mb-5 summary-row">
-    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-      <div class="fintrack-card reveal summary-card" data-delay="0.1s">
-     
-        <h4>Total Income</h4>
-        <p id="incomeAmount" class="amount">
-      ₹{{ monthly_income|default(50000)|int|round(0) }} 
-    </p>
-      </div>
-    </div>
-    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-      <div class="fintrack-card reveal summary-card" data-delay="0.2s">
- 
-        <h4>Total Expenses</h4>
-       <p id="expenseAmount" class="amount text-danger">
-  ₹{{ monthly_expenses|default(19100)|int|round(0) }}
-</p>
-      </div>
-    </div>
-    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-      <div class="fintrack-card reveal summary-card" data-delay="0.3s">
-     
-        <h4>Remaining Balance</h4>
-<p id="balanceAmount" class="amount {% if (monthly_income|default(0)|float - monthly_expenses|default(0)|float) < 0 %}text-danger{% else %}text-success{% endif %}">
-  ₹{{ (monthly_income|default(0)|float - monthly_expenses|default(0)|float)|round(0) }}
-</p>
-      </div>
-    </div>
-   <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-  <div class="fintrack-card reveal summary-card" data-delay="0.4s">
 
-    
-    <h4>Predicted Spending</h4>
+  <!-- CARD 1 -->
+  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+    <div class="fintrack-card reveal summary-card h-100">
+      <h4>Total Income</h4>
+      <p class="amount">
+        ₹{{ monthly_income|default(50000)|int|round(0) }}
+      </p>
+    </div>
+  </div>
 
-    {% set predicted = ai_predicted_expense if ai_predicted_expense is not none else (monthly_expenses|default(0)|float * 1.1) %}
-    
-    <p class="amount">
-      ₹{{ predicted | round(0) }}
-    </p>
+  <!-- CARD 2 -->
+  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+    <div class="fintrack-card reveal summary-card h-100">
+      <h4>Total Expenses</h4>
+      <p class="amount text-danger">
+        ₹{{ monthly_expenses|default(19100)|int|round(0) }}
+      </p>
+    </div>
   </div>
-</div>
+
+  <!-- CARD 3 -->
+  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+    <div class="fintrack-card reveal summary-card h-100">
+      <h4>Remaining Balance</h4>
+      <p class="amount {% if (monthly_income|default(0)|float - monthly_expenses|default(0)|float) < 0 %}text-danger{% else %}text-success{% endif %}">
+        ₹{{ (monthly_income|default(0)|float - monthly_expenses|default(0)|float)|round(0) }}
+      </p>
+    </div>
   </div>
+
+  <!-- CARD 4 -->
+  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+    <div class="fintrack-card reveal summary-card h-100">
+      <h4>Predicted Spending</h4>
+
+      {% set predicted = ai_predicted_expense if ai_predicted_expense is not none else (monthly_expenses|default(0)|float * 1.1) %}
+
+      <p class="amount">
+        ₹{{ predicted|round(0) }}
+      </p>
+    </div>
+  </div>
+
+  </div>
+
+
+
 <!-- AI Personal Finance Assistant Insights -->
 <div class="row g-4 mb-5">
   <div class="col-12">
@@ -91,8 +98,7 @@
       <h3 class="card-title mb-4"> AI Financial Insights</h3> 
 
       {% if ai_insights and 'Please add' not in ai_insights %}
-        <div class="p-4 rounded bg-light"
-             style="white-space: pre-line; font-size: 15px; line-height: 1.6; border-left: 5px solid #10b981; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+        <div class="p-4 rounded bg-light ai-insight-box">
           {{ ai_insights | safe }}
         </div>
       {% else %}
@@ -109,7 +115,7 @@
   </div>
 </div>
 
-<div class="row g-4 mb-5 align-items-stretch">
+<div class="row g-4 mb-5 align-items-stretch dashboard-flex-row">
 
   <!-- LEFT -->
   <div class="col-xl-8 d-flex">
@@ -144,7 +150,7 @@
 
 
       <!-- NEW ROW: Add Expense (LEFT) + Smart Goals (RIGHT) -->
-      <div class="row g-4 mb-5">
+     <div class="row g-4 mb-5 dashboard-flex-row">
         <!-- LEFT: Add Expense Form -->
 <div class="col-xl-5">
   <div class="fintrack-card reveal" data-delay="0.9s">
@@ -473,23 +479,19 @@
 <script>
 const revealElements = document.querySelectorAll('.reveal');
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach((entry)=>{
+    if(entry.isIntersecting){
       entry.target.classList.add('active');
-    } else {
-      entry.target.classList.remove('active');
+      observer.unobserve(entry.target);
     }
   });
-}, {
-  threshold: 0.15
+},{
+  threshold:0.12
 });
 
-revealElements.forEach((el) => observer.observe(el));
+revealElements.forEach(el => observer.observe(el));
 </script>
-
-
-
 
 
 
@@ -535,7 +537,7 @@ const data = {{ expense_values|default([])|tojson|safe }};
       maintainAspectRatio: false,
       animation: {
         animateRotate: true,
-        duration: 2000
+        duration: 600
       },
       plugins: {
         legend: {
@@ -550,6 +552,10 @@ const data = {{ expense_values|default([])|tojson|safe }};
     }
   });
 }
+});
+
+document.querySelectorAll('.reveal').forEach(el=>{
+el.style.transitionDelay = "0s";
 });
 
 </script>

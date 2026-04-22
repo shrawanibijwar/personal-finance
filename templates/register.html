@@ -3,14 +3,14 @@
 
 {% block content %}
 <div class="d-flex justify-content-center align-items-center" style="min-height:85vh;">
-  <div class="card shadow-lg p-4" style="max-width: 450px; width: 100%; border-radius: 15px; background: #ffffff;">
+  <div class="card shadow-lg p-4 auth-center-card auth-light">
     <div class="text-center mb-4">
       <h3 class="fw-bold text-success">📝 Create an Account</h3>
       <p class="text-muted">Join us to manage your finances smarter</p>
     </div>
 
     <!-- Register Form -->
-    <form method="post">
+    <form method="post" class="auth-form">
       <div class="mb-3">
         <label for="name" class="form-label fw-semibold">Full Name</label>
         <input type="text" id="name" name="name" class="form-control form-control-lg" placeholder="Enter your name" required>
