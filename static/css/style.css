@@ -719,3 +719,48 @@ body.dark-mode.admin-page small {
 }
 
 
+/* मोबाइल के लिए क्लीन नेवबार */
+@media (max-width: 991px) {
+    /* 1. नेवबार को चिपका हुआ (sticky) हटाकर नॉर्मल करें ताकि ये कंटेंट को न ढके */
+    .custom-navbar {
+        position: relative !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        display: flex !important; /* लोगो और बटन को अगल-बगल रखने के लिए */
+        justify-content: space-between !important;
+    }
+
+    /* 2. मेनू को डिफ़ॉल्ट रूप से छिपाएं - Bootstrap इसे कंट्रोल करेगा */
+    .custom-navbar .navbar-collapse {
+        display: none !important; /* पहले से छिपा रहेगा */
+        flex-basis: 100%;
+        flex-grow: 1;
+    }
+
+    /* 3. जब Hamburger बटन दबेगा, तब यह 'show' क्लास आएगी */
+    .custom-navbar .navbar-collapse.show {
+        display: flex !important; /* बटन दबाने पर दिखेगा */
+        flex-direction: column !important; /* आइटम्स एक के नीचे एक आएंगे */
+        align-items: flex-start !important;
+        background: white !important;
+        padding: 20px !important;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        margin-top: 10px;
+    }
+
+    /* 4. नेवबार की लिस्ट को मोबाइल पर सही करें */
+    .navbar-nav {
+        width: 100% !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    /* डार्क मोड सपोर्ट */
+    body.dark-mode .custom-navbar .navbar-collapse.show {
+        background: #1e293b !important;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+}

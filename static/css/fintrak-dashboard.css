@@ -247,7 +247,34 @@ body.dark-mode .form-control{
   color:#e2e8f0;
   border-color:#334155;
 }
+/* ===== DARK MODE TEXT FIX (ADD ONLY) ===== */
+body.dark-mode {
+  color: #e2e8f0;
+}
 
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+  color: #f1f5f9;
+}
+
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode small,
+body.dark-mode label {
+  color: #cbd5f5;
+}
+
+body.dark-mode .text-muted {
+  color: #94a3b8 !important;
+}
+
+body.dark-mode .transaction-table thead th {
+  color: #94a3b8;
+}
 /* ================= MOBILE ================= */
 @media(max-width:768px){
   .summary-card{
