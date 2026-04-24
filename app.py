@@ -189,17 +189,9 @@ def monthly_expense_total(user):
 
 
 def predict_goals_sequential(user, monthly_saving, current_savings):
-    """
-    Sequential prediction algorithm using numeric priorities:
-    - Sort goals by numeric priority ascending (1 = highest), then by creation date.
-    - Use current_savings as immediate pot applied to the first goals in order.
-    - For remaining amount, compute fractional months needed = remaining / monthly_saving.
-      Convert months to days using average month length (30.44 days).
-    - Next goal's start_date = previous goal end_date.
-    Returns list of dicts with start_date, end_date, status, progress_percent.
-    """
     results = []
-    # Fetch goals and sort by numeric priority then date_created then id
+
+    # Sort goals by priority → date → id
     goals = sorted(
         Goal.query.filter_by(user_id=user.id).all(),
         key=lambda g: (g.priority if g.priority is not None else 9999, g.date_created, g.id)
@@ -207,48 +199,55 @@ def predict_goals_sequential(user, monthly_saving, current_savings):
 
     start_dt = datetime.today()
     remaining_pot = float(current_savings or 0.0)
-    avg_days_per_month = 30.44  # realistic month average
 
-    # Snapshot to show how much of each goal is already covered by current savings (progress)
+    # Snapshot for progress
     original_savings = remaining_pot
 
     for g in goals:
         target = float(g.target_amount)
-        # progress percent based on original_savings towards the specific goal (bounded to 100)
+
+        # ---- PROGRESS CALCULATION ----
         if original_savings <= 0:
             progress_percent = 0.0
         else:
             progress_percent = min(100.0, (original_savings / target) * 100.0)
 
-        # Compute achieved_amount safely with Decimal
         target_decimal = Decimal(target).quantize(Decimal('0.01'))
         progress_decimal = Decimal(str(progress_percent)).quantize(Decimal('0.01'))
         achieved_amount = (target_decimal * progress_decimal / Decimal('100')).quantize(Decimal('0.01'))
 
+        # ---- MAIN LOGIC ----
         if target <= 0:
             end_dt = start_dt
             status = "Invalid target"
+
         else:
-            # If current pot covers the goal immediately:
+            # ✅ If already achievable
             if remaining_pot >= target:
-                end_dt = start_dt  # achieved now
+                end_dt = start_dt
                 status = f"✅ You can afford '{g.title}' now!"
                 remaining_pot -= target
+
             else:
-                # use whatever remains from the pot
                 still_needed = target - remaining_pot
+
                 if monthly_saving <= 0:
                     end_dt = None
-                    status = f"❌ Can't predict '{g.title}' (no monthly savings)."
+                    status = f"❌ Can't predict '{g.title}' (no savings)."
                     remaining_pot = 0.0
+
                 else:
-                    months_needed = still_needed / monthly_saving  # fractional months allowed
-                    days_needed = months_needed * avg_days_per_month
-                    # ensure at least 1 day if something is needed
-                    days_needed = max(1.0, days_needed)
+                    # 🔥 FIXED: DAILY CALCULATION
+                    daily_saving = monthly_saving / 30  # simpler & stable
+
+                    days_needed = still_needed / daily_saving
+                    days_needed = max(1, days_needed)
+
                     end_dt = start_dt + timedelta(days=days_needed)
-                    remaining_pot = 0.0
+
                     status = f"⏳ Predicted by {end_dt.strftime('%d-%m-%Y')}"
+                    remaining_pot = 0.0
+
         results.append({
             'goal': g,
             'start_date': start_dt,
@@ -258,17 +257,12 @@ def predict_goals_sequential(user, monthly_saving, current_savings):
             'achieved_amount': float(achieved_amount),
             'priority': int(g.priority or 0)
         })
-        # Next goal starts at end_dt (if end_dt is None, future goals cannot be predicted - keep same start)
-        last_end = results[-1]['end_date']
-        if last_end:
-            # next goal starts right after this end
-            start_dt = last_end
-        else:
-            # cannot predict further; keep start_dt unchanged (or break if you prefer)
-            start_dt = last_end or start_dt
+
+        # ---- SEQUENTIAL START ----
+        if end_dt:
+            start_dt = end_dt
 
     return results
-
 
 def generate_ai_insights(user):
     """Generate structured financial insights"""
@@ -1127,13 +1121,23 @@ def export_pdf():
 @login_required
 def clear_dashboard():
     try:
+        # Delete data
         Expense.query.filter_by(user_id=current_user.id).delete()
         Goal.query.filter_by(user_id=current_user.id).delete()
+        Loan.query.filter_by(user_id=current_user.id).delete()
+
+        # Reset user financial data
+        current_user.monthly_income = 0
+        current_user.current_savings = 0
+
         db.session.commit()
-        flash('All your dashboard data cleared.', 'info')
+
+        flash('All dashboard data cleared!', 'info')
+
     except:
         db.session.rollback()
         flash('Error clearing dashboard data', 'danger')
+
     return redirect(url_for('dashboard'))
 
 # ---- Profile Update ----

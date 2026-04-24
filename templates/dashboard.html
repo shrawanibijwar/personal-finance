@@ -206,6 +206,8 @@
 
   </div>
 </div>
+
+
         <!-- RIGHT: Smart Goals (MOVED & RESIZED) -->
         <div class="col-xl-7">
           <div class="fintrack-card reveal" data-delay="1.0s">
@@ -245,29 +247,67 @@
             {% if predicted_goals %}
             <div class="table-responsive">
               <table class="table table-sm goals-table mb-0">
-                <thead>
-                  <tr><th>Goal</th><th>Target</th><th>Current</th><th>Progress</th><th>Action</th></tr>
-                </thead>
-                <tbody>
-                  {% for p in predicted_goals[:5] %}
-                  <tr>
-                    <td class="small fw-bold">{{ p.goal.title[:25] }}</td>
-                    <td class="small">₹{{ p.goal.target_amount|round(0) }}</td>
-                    <td class="small">₹{{ p.achieved_amount|round(0)|int }}</td>
-                    <td class="small">
-                      <div class="progress progress-sm mb-1">
-                        <div class="progress-bar" style="width: {{ p.progress_percent }}%"></div>
-                      </div>
-                      <small>{{ p.progress_percent }}%</small>
-                    </td>
-                    <td>
-                      <form action="{{ url_for('delete_goal', goal_id=p.goal.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this goal?')">
-                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Delete Goal">🗑️</button>
-                      </form>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
+           <thead>
+  <tr>
+    <th>Goal</th>
+    <th>Target</th>
+    <th>Start</th>
+    <th>Predicted Completion</th>
+    <th>Progress</th>
+    <th>Action</th>
+  </tr>
+</thead>
+
+<tbody>
+{% for p in predicted_goals[:5] %}
+<tr>
+
+  <!-- Goal -->
+  <td class="small fw-bold">{{ p.goal.title[:25] }}</td>
+
+  <!-- Target -->
+  <td class="small">₹{{ p.goal.target_amount|round(0) }}</td>
+
+  <!-- ✅ Start Date -->
+  <td class="small">
+    {{ p.start_date.strftime('%d-%m-%Y') }}
+  </td>
+
+  <!-- ✅ End Date -->
+  <td class="small">
+    {% if p.end_date %}
+      {{ p.end_date.strftime('%d-%m-%Y') }}
+    {% else %}
+      Not predictable
+    {% endif %}
+  </td>
+
+  <!-- ✅ Progress -->
+  <td>
+    <div class="progress" style="height:6px;">
+      <div class="progress-bar bg-success"
+           style="width: {{ p.progress_percent }}%;">
+      </div>
+    </div>
+    <small>{{ p.progress_percent }}%</small>
+  </td>
+
+  <!-- Action -->
+  <td>
+    <form action="{{ url_for('delete_goal', goal_id=p.goal.id) }}"
+          method="POST"
+          onsubmit="return confirm('Delete this goal?')">
+
+      <button type="submit"
+              class="btn btn-sm btn-outline-danger rounded-pill">
+        🗑️
+      </button>
+    </form>
+  </td>
+
+</tr>
+{% endfor %}
+</tbody>
               </table>
             </div>
             {% else %}
@@ -472,6 +512,18 @@
   <a href="{{ url_for('export_pdf') }}" class="export-btn pdf-btn">
      Download PDF Report
   </a>
+</div>
+
+<div class="text-center mt-4">
+  <form action="{{ url_for('clear_dashboard') }}" method="POST"
+        onsubmit="return confirm('⚠️ This will delete ALL your expenses and goals. Are you sure?');">
+
+    <button type="submit"
+            class="btn btn-danger px-4 py-2 rounded-pill bg-transparent  text-black shadow-sm">
+       Clear Dashboard
+    </button>
+
+  </form>
 </div>
 
 
